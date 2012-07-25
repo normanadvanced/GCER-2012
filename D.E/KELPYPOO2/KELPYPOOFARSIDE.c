@@ -82,6 +82,7 @@ void grab_bottom()
 	servo kelp_grab = build_servo(KELP_PORT, 300, 1810, 20, 5);
 	wait_servo(kelp_arm, KELP_BOTTOM);
 	wait_servo(kelp_grab, GRAB_DOWN);
+	create_drive_segment(MID_SPEED, -80);
 	align_bwall();
 	//create_accel_straight(0, -ACCEL_MAX + 60.0, -80.0);
 	create_stop();
@@ -114,7 +115,7 @@ void grab_single()
 void align_bwall()
 {
 	create_straight(-LOW_SPEED);
-	msleep(2000L);
+	msleep(1200L);
 	create_cease();
 	msleep(500L);
 	create_drive_segment(LOW_SPEED, 27);
@@ -123,7 +124,7 @@ void align_bwall()
 void align_twall()
 {
 	create_straight(-LOW_SPEED);
-	msleep(2000L);
+	msleep(1200L);
 	create_cease();
 	msleep(500L);
 	create_drive_segment(LOW_SPEED, 43);
@@ -138,14 +139,15 @@ int main()
 
 	//light_it_up(LIGHT_PORT);
 	lightstart(LIGHT_PORT,120.0);
-	msleep(12000L);
-	create_drive_segment(MID_SPEED, 1000);
-	create_drive_arc(MID_SPEED, 400, 88);
-	create_drive_arc(MID_SPEED, -400, -88);
+
+	create_drive_segment(MID_SPEED+50, 750);
+	create_drive_arc(MID_SPEED+50, 400, 88);
+	create_drive_arc(MID_SPEED+50, -400, -88);
 	create_spin_angle(MID_SPEED, 175);
 	create_cease();
 	create_straight(-LOW_SPEED);
-	msleep(1500L);
+    create_sync();
+	msleep(1500);
 	create_drive_segment(MID_SPEED, 230);
 	create_spin_angle(LOW_SPEED, 86);
 	create_cease();
@@ -155,44 +157,52 @@ int main()
 	grab_bottom();
 	grab_single();
 
-	create_drive_arc(MID_SPEED, -250, -88);
-	create_drive_arc(MID_SPEED, 300,45);
-	create_drive_arc(MID_SPEED,-300,-45);
-	create_drive_segment(MID_SPEED, 100);
-	create_drive_arc(MID_SPEED,-430,-45);
-	create_drive_segment(MID_SPEED, 170);
-	create_drive_arc(MID_SPEED, 390,45);
-	create_drive_segment(200, 230);
+	create_drive_arc(MID_SPEED+50, -250, -88);
+	create_drive_arc(MID_SPEED+50, 300,45);
+	create_drive_arc(MID_SPEED+50,-300,-45);
+	create_drive_segment(MID_SPEED+50, 100);
+	create_drive_arc(MID_SPEED+50,-430,-45);
+	create_drive_segment(MID_SPEED+50, 170);
+	create_drive_arc(MID_SPEED+50, 390,45);
+	create_drive_segment(MID_SPEED+50, 200);
 	create_spin_angle(LOW_SPEED, -86);
 	create_cease();
-	create_drive_segment(200, -240);
-	create_cease();
+	create_straight(-LOW_SPEED);
+	msleep(1800);
+	create_stop();
 
 	dump_kelp();
 
-	create_drive_arc(LOW_SPEED, -200, -88);
+	create_drive_segment(HIGH_SPEED,30);//go away from starting box
+	create_spin_angle(HIGH_SPEED, -78);//turn to gate part 1
+	create_drive_segment(HIGH_SPEED, 938);//go to gate
+	create_drive_arc(HIGH_SPEED,105,84);//arc to gate
+	//create_drive_time(HIGH_SPEED,1800);//go through the gate
+	/*
+	create_drive_segment(HIGH_SPEED,1470);
+	create_drive_segment(HIGH_SPEED,-100);
+	create_spin_angle(HIGH_SPEED,78);
+	*/
 	create_cease();
-	create_straight(-LOW_SPEED);
-	msleep(3000L);
-	create_cease();
-	create_drive_segment(LOW_SPEED, 15);
-	create_drive_arc(LOW_SPEED, -60, -86);
-	create_drive_segment(LOW_SPEED, -30);
-	create_cease();
-
-	align_twall();
-	grab_top();
-	grab_bottom();
-	grab_single();
-
-	create_drive_arc(MID_SPEED, -250, -88);
-	create_drive_segment(LOW_SPEED, -20);
-	create_spin_angle(LOW_SPEED, -88);
-	create_cease();
-	create_straight(-LOW_SPEED);
-	msleep(1000L);
-	create_cease();
-
-	dump_kelp();
+	create_drive_straight(HIGH_SPEED);//go onto oppponent's side of board
+	msleep(1400);
+	create_stop();
+	create_arc(350,550);//arc to the opponent's mpa
+	msleep(2500L);
+	create_stop();//pause to keep the creat
+	create_drive_straight(HIGH_SPEED);//go onto oppponent's side of board
+	msleep(750);
+	create_stop();
+	create_drive_straight(-HIGH_SPEED);//go onto oppponent's side of board
+	msleep(5000);
+	create_stop();
+	/*
+	create_drive_segment(500,-500);//go past the IC
+	create_drive_arc(320,-250,25);//arc to
+	create_drive_arc(320,250,-8);
+	*/
+	//create_drive_segment(HIGH_SPEED,-750);
+	//create_drive_arc(HIGH_SPEED,100,84);
+	//create_drive_segment(HIGH_SPEED,1300);
 }
 

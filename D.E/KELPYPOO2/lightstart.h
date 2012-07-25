@@ -20,7 +20,6 @@ void kill_servos()
 }
 void *wait_to_kill(void *process_prop)
 {
-    create_stop();
 	pthread_mutex_trylock(&kill_mem);
 	struct run_table *killer = (struct run_table *) process_prop;
 	sleep(killer->process_kill_time);

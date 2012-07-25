@@ -18,6 +18,121 @@
 #define dropper 3
 #define Light 2
 
+
+void stuff()
+{
+	int n;
+	n=0;
+	for(n=0;n<2;++n)
+	{
+		//open and close stuffer
+		set_servo_position(stuffer,stuffer_closed);
+		msleep(500);
+		set_servo_position(stuffer,stuffer_open);
+		msleep(500);
+		//shake?
+	}
+}
+void shake()
+{
+	mrp(left_motor,900,75);
+	mrp(right_motor,900,75);
+	bmd(left_motor);
+	bmd(right_motor);
+	mrp(left_motor,900,-75);
+	mrp(right_motor,900,-75);
+	bmd(left_motor);
+	bmd(right_motor);
+}
+
+void move_straight()
+{
+	int r_speed = (int)((float)left_motor_speed*((float)analog10(et_sensor)/(float)ideal_distance));
+	mav(left_motor,left_motor_speed);
+	mav(right_motor,r_speed);
+	msleep(50);
+	printf("ET=%d.\tSpeed=%d\tTop Hat=%d\n",analog10(et_sensor), r_speed, analog10(top_hat));
+}
+
+void light_start()
+{
+	int light_off,light_on;
+	while(1)
+	{
+		printf("Hold A for OFF calibration\n");
+		while(!a_button())
+		{
+			msleep(50);
+		}
+		while(a_button())
+		{
+			light_off=analog10(Light);
+			msleep(50);
+		}
+		printf("Off value=%d\n",light_off);
+		printf("Hold B for ON calibration\n");
+		while(!b_button())
+		{
+			msleep(50);
+		}
+		while(b_button())
+		{
+			light_on=analog10(Light);
+			msleep(50);
+		}
+		printf("On value=%d\n",light_on);
+		if(((light_on-light_off)>120)||((light_on-light_off)<-120))
+		{
+			printf("Calibrated\n");
+			break;
+		}
+	}
+	printf("Press the A button\n");
+	while(!a_button())
+	{
+		msleep(50);
+	}
+	while(a_button())
+	{
+		msleep(50);
+	}
+	printf("Ready to start\n");
+	while(analog10(Light)>((light_on+light_off)/2))
+	{
+		msleep(50);
+	}
+}
+
+void setup()
+{
+	printf("Am I running with a light?\n");
+	printf("Press A if with a light, B if not.\n");
+	//wait until a button is pressed
+	while(!a_button()&&!b_button())
+	{
+		msleep(50);
+	}
+	//command for button A
+	if(a_button())
+	{
+		while(a_button())
+		{
+			msleep(50);
+		}
+		printf("Running with a light.\n");
+		light_start();
+	}
+	//command for button B
+	if(b_button())
+	{
+		while(b_button())
+		{
+			msleep(50);
+		}
+		printf("Running without a light.\n");
+	}
+}
+
 int main()
 {
 	int m;
@@ -33,10 +148,13 @@ int main()
 	time_start=seconds();
 	set_servo_position(stuffer,stuffer_open);
 
-
+	mrp(left_motor,950,-691);
+	mrp(right_motor,975,720);
+	bmd(left_motor);
+	bmd(right_motor);
 	//move some before edge sensing
-	mrp(left_motor,950,2000);
-	mrp(right_motor,975,2025);
+	mrp(left_motor,950,6000);
+	mrp(right_motor,975,6025);
 	bmd(left_motor);
 	bmd(right_motor);
 	set_servo_position(dropper,640);
@@ -154,118 +272,3 @@ int main()
 	printf("Done %f.\n",(seconds()-time_start));
 	ao();
 }
-
-void stuff()
-{
-	int n;
-	n=0;
-	for(n=0;n<2;++n)
-	{
-		//open and close stuffer
-		set_servo_position(stuffer,stuffer_closed);
-		msleep(500);
-		set_servo_position(stuffer,stuffer_open);
-		msleep(500);
-		//shake?
-	}
-}
-void shake()
-{
-	mrp(left_motor,900,75);
-	mrp(right_motor,900,75);
-	bmd(left_motor);
-	bmd(right_motor);
-	mrp(left_motor,900,-75);
-	mrp(right_motor,900,-75);
-	bmd(left_motor);
-	bmd(right_motor);
-}
-
-void move_straight()
-{
-	int r_speed = (int)((float)left_motor_speed*((float)analog10(et_sensor)/(float)ideal_distance));
-	mav(left_motor,left_motor_speed);
-	mav(right_motor,r_speed);
-	msleep(50);
-	printf("ET=%d.\tSpeed=%d\tTop Hat=%d\n",analog10(et_sensor), r_speed, analog10(top_hat));
-}
-
-void light_start()
-{
-	int light_off,light_on;
-	while(1)
-	{
-		printf("Hold A for OFF calibration\n");
-		while(!a_button())
-		{
-			msleep(50);
-		}
-		while(a_button())
-		{
-			light_off=analog10(Light);
-			msleep(50);
-		}
-		printf("Off value=%d\n",light_off);
-		printf("Hold B for ON calibration\n");
-		while(!b_button())
-		{
-			msleep(50);
-		}
-		while(b_button())
-		{
-			light_on=analog10(Light);
-			msleep(50);
-		}
-		printf("On value=%d\n",light_on);
-		if(((light_on-light_off)>120)||((light_on-light_off)<-120))
-		{
-			printf("Calibrated\n");
-			break;
-		}
-	}
-	printf("Press the A button\n");
-	while(!a_button())
-	{
-		msleep(50);
-	}
-	while(a_button())
-	{
-		msleep(50);
-	}
-	printf("Ready to start\n");
-	while(analog10(Light)>((light_on+light_off)/2))
-	{
-		msleep(50);
-	}
-}
-
-void setup()
-{
-	printf("Am I running with a light?\n");
-	printf("Press A if with a light, B if not.\n");
-	//wait until a button is pressed
-	while(!a_button()&&!b_button())
-	{
-		msleep(50);
-	}
-	//command for button A
-	if(a_button())
-	{
-		while(a_button())
-		{
-			msleep(50);
-		}
-		printf("Running with a light.\n");
-		light_start();
-	}
-	//command for button B
-	if(b_button())
-	{
-		while(b_button())
-		{
-			msleep(50);
-		}
-		printf("Running without a light.\n");
-	}
-}
-

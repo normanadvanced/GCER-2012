@@ -187,7 +187,7 @@ void align_twall()
 	create_straight(-LOW_SPEED);
 	msleep(1000L);
 	create_cease();
-	create_drive_segment(LOW_SPEED, 43);
+	create_drive_segment(LOW_SPEED, 33);
 	create_cease();
 }
 int main()
@@ -198,10 +198,9 @@ int main()
 
 	//light_it_up(LIGHT_PORT);
 	lightstart(LIGHT_PORT,120.0);
-	msleep(4000L);
 
 	create_full();
-	create_drive_segment(HIGH_SPEED, -420);
+	create_drive_segment(HIGH_SPEED, -150);
 	start_process(set_top);
 	create_drive_arc(HIGH_SPEED, -200, 155);
 	create_drive_segment(HIGH_SPEED, -365);
@@ -227,23 +226,25 @@ int main()
 	create_drive_segment(HIGH_SPEED,-100);
 	create_spin_angle(HIGH_SPEED,78);
 	*/
-
-	create_drive_segment(HIGH_SPEED,750);//go onto oppponent's side of board
-	create_drive_arc(350,500,93);//arc to the opponent's mpa
-	create_drive_segment(500,640);//go to the opponent's mpa
-	create_stop();//pause to keep the create
-	create_sync();
-	msleep(10000);
+	create_cease();
+	create_drive_straight(HIGH_SPEED);//go onto oppponent's side of board
+	msleep(1400);
+	create_stop();
+	create_arc(350,550);//arc to the opponent's mpa
+	msleep(2500L);
+	create_stop();//pause to keep the creat
+	create_drive_straight(HIGH_SPEED);//go onto oppponent's side of board
+	msleep(750);
+	create_stop();
+	create_drive_straight(-HIGH_SPEED);//go onto oppponent's side of board
+	msleep(5000);
+	create_stop();
 	/*
 	create_drive_segment(500,-500);//go past the IC
 	create_drive_arc(320,-250,25);//arc to
 	create_drive_arc(320,250,-8);
 	*/
 	//create_drive_segment(HIGH_SPEED,-750);
-	create_straight(-500);//go to the oppponent's starting box using time so we don't grind against the pvc
-	create_wait_duration(45);
-	create_stop();
 	//create_drive_arc(HIGH_SPEED,100,84);
 	//create_drive_segment(HIGH_SPEED,1300);
 }
-
